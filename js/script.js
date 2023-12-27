@@ -80,7 +80,7 @@ async function DisplayPopularShows() {
           </div>
   `;
 
-  document.getElementById('popular-shows').appendChild
+    document.getElementById('popular-shows').appendChild;
   });
 }
 
@@ -89,13 +89,25 @@ async function fetchAPIData(endpoint) {
   const api_key = 'a8c6b8562cb3f14c24958ab98f97b910';
   const api_url = 'https://api.themoviedb.org/3/';
 
+  showSpinner();
   const response = await fetch(
     `${api_url}${endpoint}?api_key=${api_key}&language=en-US`
   );
 
   const data = await response.json();
+  hideSpinner();
 
   return data;
+}
+
+// show spinner
+function showSpinner() {
+  document.getElementsByClassName('spinner').classList.add('show');
+}
+
+// hide spinner
+function hideSpinner() {
+  document.getElementsByClassName('spinner').classList.add('hide');
 }
 
 // Initialize the app
