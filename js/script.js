@@ -49,7 +49,7 @@ async function displayPopularMovies() {
 }
 
 // fetch popular tv show to display in tv shows page
-async function DisplayPopularShows() {
+async function displayPopularShows() {
   const { results } = await fetchAPIData('tv/popular');
   console.log(results);
 
@@ -80,7 +80,7 @@ async function DisplayPopularShows() {
           </div>
   `;
 
-    document.getElementById('popular-shows').appendChild;
+    document.getElementById('popular-shows').appendChild(div);
   });
 }
 
@@ -90,11 +90,14 @@ async function fetchAPIData(endpoint) {
   const api_url = 'https://api.themoviedb.org/3/';
 
   showSpinner();
+
   const response = await fetch(
     `${api_url}${endpoint}?api_key=${api_key}&language=en-US`
   );
 
+ 
   const data = await response.json();
+
   hideSpinner();
 
   return data;
@@ -102,12 +105,12 @@ async function fetchAPIData(endpoint) {
 
 // show spinner
 function showSpinner() {
-  document.getElementsByClassName('spinner').classList.add('show');
+  document.querySelector('.spinner').classList.add('show');
 }
 
 // hide spinner
 function hideSpinner() {
-  document.getElementsByClassName('spinner').classList.add('hide');
+  document.querySelector('.spinner').classList.remove('show');
 }
 
 // Initialize the app
@@ -118,7 +121,7 @@ function init() {
       displayPopularMovies();
       break;
     case '/shows.html':
-      DisplayPopularShows();
+      displayPopularShows();
       break;
     case '/movie-details.html':
       console.log('Movie Details');
