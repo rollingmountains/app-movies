@@ -51,10 +51,11 @@ async function displayPopularMovies() {
 // fetch and display movie details
 async function displayMovieDetails() {
   const movieId = window.location.search.split('=');
-  console.log(movieId);
 
   const movie = await fetchAPIData(`movie/${movieId[1]}`);
   console.log(movie);
+
+  displayBackgroundImage('movie', movie.backdrop_path);
 
   const div = document.createElement('div');
   div.innerHTML = `
@@ -122,14 +123,37 @@ async function displayMovieDetails() {
           }</div>
         </div>`;
 
+  // display background image
+  function displayBackgroundImage(type, path) {
+    const overlayDiv = document.createElement('div');
+    overlayDiv.style.backgroundImage = `url(https://images.tmdb.org/t/p/original/${path})`;
+    overlayDiv.style.backgroundPosition = 'center';
+    overlayDiv.style.backgroundRepeat = 'no-repeat';
+    overlayDiv.style.height = '100vh';
+    overlayDiv.style.width = '100vw';
+    overlayDiv.style.position = 'absolute';
+    overlayDiv.style.top = '0';
+    overlayDiv.style.left = '0';
+    overlayDiv.style.zIndex = '-1';
+    overlayDiv.style.opacity = '0.1';
+
+    if (type === 'movie') {
+      console.log(document.querySelector('#movie-details'));
+      document.querySelector('#movie-details').appendChild(overlayDiv);
+      
+    } else {
+      document.querySelector('#show-details').appendChild(overlayDiv);
+    }
+  }
+
   // convert number to currency
   function numberToCurrency(n) {
     const dollar = n.toLocaleString('en-us', {
       style: 'currency',
-      currency: 'USD'
-    })
+      currency: 'USD',
+    });
 
-    return dollar
+    return dollar;
   }
   document.querySelector('#movie-details').appendChild(div);
 }
