@@ -48,6 +48,92 @@ async function displayPopularMovies() {
   });
 }
 
+// fetch and display movie details
+async function displayMovieDetails() {
+  const movieId = window.location.search.split('=');
+  console.log(movieId);
+
+  const movie = await fetchAPIData(`movie/${movieId[1]}`);
+  console.log(movie);
+
+  const div = document.createElement('div');
+  div.innerHTML = `
+  <div class="details-top">
+          <div>
+          ${
+            movie.poster_path
+              ? `<img
+          src="https://images.tmdb.org/t/p/w500${movie.poster_path}"
+          class="card-img-top"
+          alt="${movie.title}"
+        />`
+              : ` <img
+      src="images/no-image.jpg"
+      class="card-img-top"
+      alt="${movie.title}"
+    />`
+          }
+            
+          </div>
+          <div>
+            <h2>${movie.title}</h2>
+            <p>
+              <i class="fas fa-star text-primary"></i>
+              ${movie.vote_average.toFixed(1)} / 10
+            </p>
+            <p class="text-muted">Release Date: ${movie.release_date}</p>
+            <p>
+              ${movie.overview}
+            </p>
+            <h5>Genres</h5>
+            <ul class="list-group">
+            ${movie.genres.map((genre) => `<li>${genre.name}</li>`).join('')}
+            </ul>
+            <a href="${
+              movie.homepage
+            }" target="_blank" class="btn">Visit Movie Homepage</a>
+          </div>
+        </div>
+        <div class="details-bottom">
+          <h2>Movie Info</h2>
+          <ul>
+            <li><span class="text-secondary">Budget:</span> ${
+              movie.budget
+                ? `${numberToCurrency(movie.budget)}`
+                : `No data available`
+            }</li>
+            <li><span class="text-secondary">Revenue:</span> ${
+              movie.revenue
+                ? `${numberToCurrency(movie.revenue)}`
+                : `No data available`
+            } </li>
+            <li><span class="text-secondary">Runtime:</span> ${
+              movie.runtime
+            } minutes</li>
+            <li><span class="text-secondary">Status:</span> ${movie.status}</li>
+          </ul>
+          <h4>Production Companies</h4>
+          <div class="list-group">${
+            movie.production_companies
+              ? movie.production_companies
+                  .map((comp) => `<span>${comp.name}</span>`)
+                  .join(',')
+              : `No data available`
+          }</div>
+        </div>`;
+
+  // convert number to currency
+  function numberToCurrency(n) {
+    const dollar = n.toLocaleString('en-us', {
+      style: 'currency',
+      currency: 'USD'
+    })
+
+    return dollar
+  }
+  document.querySelector('#movie-details').appendChild(div);
+}
+
 // fetch popular tv show to display in tv shows page
 async function displayPopularShows() {
   const { results } = await fetchAPIData('tv/popular');
@@ -84,11 +170,6 @@ async function displayPopularShows() {
   });
 }
 
-// display movie details
-async function displayMovieDetails() {
-  const results = fetchAPIData('')
-}
-
 // fetch api for TMDB
 async function fetchAPIData(endpoint) {
   const api_key = 'a8c6b8562cb3f14c24958ab98f97b910';
@@ -100,7 +181,6 @@ async function fetchAPIData(endpoint) {
     `${api_url}${endpoint}?api_key=${api_key}&language=en-US`
   );
 
- 
   const data = await response.json();
 
   hideSpinner();
