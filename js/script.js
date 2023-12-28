@@ -21,7 +21,7 @@ async function displayPopularMovies() {
     const div = document.createElement('div');
     div.classList.add('card');
     div.innerHTML = `
-          <a href="/movie-details.html?id=1">
+          <a href="/movie-details.html?id=${movie.id}">
          ${
            movie.poster_path
              ? `<img
@@ -57,7 +57,7 @@ async function displayPopularShows() {
     const div = document.createElement('div');
     div.classList.add('card');
     div.innerHTML = `
-  <a href="tv-details.html?id=1">
+  <a href="tv-details.html?id=${show.id}">
             ${
               show.poster_path
                 ? `<img
@@ -82,6 +82,11 @@ async function displayPopularShows() {
 
     document.getElementById('popular-shows').appendChild(div);
   });
+}
+
+// display movie details
+async function displayMovieDetails() {
+  const results = fetchAPIData('')
 }
 
 // fetch api for TMDB
@@ -124,7 +129,7 @@ function init() {
       displayPopularShows();
       break;
     case '/movie-details.html':
-      console.log('Movie Details');
+      displayMovieDetails();
       break;
     case '/tv-details.html':
       console.log('Tv show details');
