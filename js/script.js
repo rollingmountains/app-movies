@@ -13,6 +13,55 @@ function highlightActiveLink() {
   });
 }
 
+// display now playing movies in slides
+async function displayMovieSlides() {
+  const { results } = await fetchAPIData('movie/now_playing');
+  console.log(results);
+
+  results.forEach((movie) => {
+    const div = document.createElement('div');
+    div.classList.add('swiper-slide');
+
+    div.innerHTML = `
+    <a href="movie-details.html?id=${movie.id}">
+              <img src="https://images.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+            </a>
+            <h4 class="swiper-rating">
+              <i class="fas fa-star text-secondary"></i> ${movie.vote_average} / 10
+            </h4>
+    `;
+
+    document.querySelector('.swiper-wrapper').appendChild(div);
+  });
+
+  initSwiper();
+}
+
+// initialise swiper library
+function initSwiper() {
+  const swiper = new Swiper('.swiper', {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    freeMode: true,
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      500: {
+        slidesPerView: 2,
+      },
+      700: {
+        slidesPerView: 3,
+      },
+      1200: {
+        slidesPerView: 4,
+      },
+    },
+  });
+}
+
 // fetch popular movie to display in home page
 async function displayPopularMovies() {
   const { results } = await fetchAPIData('movie/popular');
@@ -293,6 +342,7 @@ function init() {
     case '/':
     case '/index.html':
       displayPopularMovies();
+      displayMovieSlides();
       break;
     case '/shows.html':
       displayPopularShows();
