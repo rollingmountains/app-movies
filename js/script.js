@@ -1,5 +1,14 @@
 const global = {
   currentPage: window.location.pathname,
+  search: {
+    type: '',
+    term: '',
+    page: 1,
+  },
+  api: {
+    apiKey: 'a8c6b8562cb3f14c24958ab98f97b910',
+    apiUrl: 'https://api.themoviedb.org/3/',
+  },
 };
 
 // Highlight tab
@@ -37,6 +46,34 @@ async function displayMovieSlides() {
   initSwiper();
 }
 
+// movie/tv search
+async function search() {
+  const queryString = window.location.search;
+  console.log(queryString);
+  const urlParams = new URLSearchParams(queryString);
+
+  global.search.type = urlParams.get('type');
+  global.search.term = urlParams.get('search-term');
+
+  if (global.search.term !== '' && global.search.term !== null) {
+    const result = await fetchSearchAPI();
+    console.log(result);
+  } else {
+    showAlert('Please enter an search item');
+  }
+}
+
+// show alert message
+function showAlert(message, className) {
+  const alertEl = document.createElement('div');
+  alertEl.classList.add('alert', className);
+  alertEl.appendChild(document.createTextNode(message));
+
+  document.querySelector('#alert').appendChild(alertEl);
+
+  setTimeout(() => alertEl.remove(), 3000);
+}
+
 // initialise swiper library
 function initSwiper() {
   const swiper = new Swiper('.swiper', {
@@ -53,10 +90,10 @@ function initSwiper() {
         slidesPerView: 2,
       },
       700: {
-        slidesPerView: 3,
+        slidesPerView: 4,
       },
       1200: {
-        slidesPerView: 4,
+        slidesPerView: 5,
       },
     },
   });
@@ -308,10 +345,27 @@ function displayBackgroundImage(type, path) {
   }
 }
 
+// fetch search api data
+async function fetchSearchAPI() {
+  const api_key = global.api.apiKey;
+  const api_url = global.api.apiUrl;
+
+  showSpinner();
+
+  const response = await fetch(
+    `${api_url}search/${global.search.type}?api_key=${api_key}&language=en-US&query=${global.search.term}`
+  );
+
+  const data = await response.json();
+
+  hideSpinner();
+
+  return data
+}
 // fetch api for TMDB
 async function fetchAPIData(endpoint) {
-  const api_key = 'a8c6b8562cb3f14c24958ab98f97b910';
-  const api_url = 'https://api.themoviedb.org/3/';
+  const api_key = global.api.apiKey;
+  const api_url = global.api.apiUrl;
 
   showSpinner();
 
@@ -354,7 +408,7 @@ function init() {
       displayShowDetails();
       break;
     case '/search.html':
-      console.log('Search');
+      search();
       break;
   }
 
