@@ -4,6 +4,8 @@ const global = {
     type: '',
     term: '',
     page: 1,
+    totalResults: 0,
+    totalPages: 0,
   },
   api: {
     apiKey: 'a8c6b8562cb3f14c24958ab98f97b910',
@@ -56,8 +58,13 @@ async function search() {
   global.search.term = urlParams.get('search-term');
 
   if (global.search.term !== '' && global.search.term !== null) {
-    const { results, page, total_pages } = await fetchSearchAPI();
-    console.log(results, total_pages, page);
+    const { results, page, total_pages, total_results } =
+      await fetchSearchAPI();
+    console.log(results, total_pages, page, total_results);
+
+    global.search.page = page;
+    global.search.totalPages = total_pages;
+    global.search.totalResults = total_results;
 
     if (results.length === 0) {
       showAlert('Sorry no matches found');
@@ -71,17 +78,36 @@ async function search() {
 
 // display search results in DOM
 function displaySearchResults(results) {
+  document.querySelector('#search-results-heading').innerHTML = '';
+  document.querySelector('#search-results').innerHTML = '';
+  document.querySelector('#pagination').innerHTML = '';
+
   results.forEach((result) => {
     const div = document.createElement('div');
     div.classList.add('card');
     div.innerHTML = `
-      <a href="#">
-      <img src="https://images.tmdb.org/t/p/w500${
-        result.poster_path
-      }" class="card-img-top" alt="${
-      global.search.type === 'movie' ? result.title : result.original_name
-    }" />
+    ${
+      global.search.type === 'movie'
+        ? `<a href=/movie-details.html?id=${result.id}>`
+        : `<a href=/tv-details.html?id=${result.id}>`
+    }
+    ${
+      result.poster_path
+        ? `
+    <img src="https://images.tmdb.org/t/p/w500${
+      result.poster_path
+    }" class="card-img-top" alt="${
+            global.search.type === 'movie' ? result.title : result.original_name
+          }" />
+ `
+        : ` 
+  <img src="images/no-image.jpg" class="card-img-top" alt="${
+    global.search.type === 'movie' ? result.title : result.original_name
+  }" />
+`
+    } 
     </a>
+   
     <div class="card-body">
       <h5 class="card-title">${
         global.search.type === 'movie' ? result.title : result.original_name
@@ -95,7 +121,53 @@ function displaySearchResults(results) {
       </p>
     </div>
       `;
+
+    document.querySelector('#search-results-heading').innerHTML = `
+    <h3>${results.length} of ${global.search.totalResults} shown for ${global.search.term}</h3>
+    `;
     document.querySelector('#search-results').appendChild(div);
+  });
+
+  displayPagination();
+}
+
+// display pagination for search results
+function displayPagination() {
+  const div = document.createElement('div');
+  div.classList.add('pagination');
+
+  div.innerHTML = `
+  <button class="btn btn-primary" id="prev">Prev</button>
+  <button class="btn btn-primary" id="next">Next</button>
+  <div class="page-counter">Page ${global.search.page} of ${global.search.totalResults}</div>
+  `;
+
+  document.querySelector('#pagination').appendChild(div);
+
+  // disable prev when on first page
+  if (global.search.page === 1) {
+    document.querySelector('#prev').disabled = true;
+  }
+
+  // disable next when on last page
+  if (global.search.page === global.search.totalPages) {
+    document.querySelector('#next').disabled = true;
+  }
+
+  // display next set of results
+  document.querySelector('#next').addEventListener('click', async () => {
+    global.search.page++;
+    const { results, totalPages } = await fetchSearchAPI();
+
+    displaySearchResults(results);
+  });
+
+  // display prev set of results
+  document.querySelector('#prev').addEventListener('click', async () => {
+    global.search.page--;
+    const { results, totalPages } = await fetchSearchAPI();
+
+    displaySearchResults(results);
   });
 }
 
@@ -389,7 +461,7 @@ async function fetchSearchAPI() {
   showSpinner();
 
   const response = await fetch(
-    `${api_url}search/${global.search.type}?api_key=${api_key}&language=en-US&query=${global.search.term}`
+    `${api_url}search/${global.search.type}?api_key=${api_key}&language=en-US&query=${global.search.term}&page=${global.search.page}`
   );
 
   const data = await response.json();
