@@ -63,58 +63,40 @@ async function search() {
       showAlert('Sorry no matches found');
       return;
     }
-
-    if (global.search.term !== '' && global.search.term === 'movie') {
-      displaySearchResults(results, 'movie');
-    } else {
-      displaySearchResults(results, 'tv');
-    }
+    displaySearchResults(results);
   } else {
     showAlert('Please enter a search item');
   }
 }
 
 // display search results in DOM
-function displaySearchResults(results, type) {
-
-  if(type === 'movie'){
-    results.forEach((movie) => {
-      const div = document.createElement('div');
-      div.classList.add('card');
-      div.innerHTML = `
+function displaySearchResults(results) {
+  results.forEach((result) => {
+    const div = document.createElement('div');
+    div.classList.add('card');
+    div.innerHTML = `
       <a href="#">
-      <img src="https://images.tmdb.org/t/p/w500${movie.poster_path}" class="card-img-top" alt="${movie.title}" />
+      <img src="https://images.tmdb.org/t/p/w500${
+        result.poster_path
+      }" class="card-img-top" alt="${
+      global.search.type === 'movie' ? result.title : result.original_name
+    }" />
     </a>
     <div class="card-body">
-      <h5 class="card-title">${movie.title}</h5>
+      <h5 class="card-title">${
+        global.search.type === 'movie' ? result.title : result.original_name
+      }</h5>
       <p class="card-text">
-        <small class="text-muted">Release: ${movie.release_date}</small>
+        <small class="text-muted">Release: ${
+          global.search.type === 'movie'
+            ? result.release_date
+            : result.first_air_date
+        }</small>
       </p>
     </div>
       `;
-  
-      document.querySelector('#search-results').appendChild(div);
-    });
-  } else {
-    results.forEach((tv) => {
-      const div = document.createElement('div');
-      div.classList.add('card');
-      div.innerHTML = `
-      <a href="#">
-      <img src="https://images.tmdb.org/t/p/w500${tv.poster_path}" class="card-img-top" alt="${tv.original_name}" />
-    </a>
-    <div class="card-body">
-      <h5 class="card-title">${tv.original_name}</h5>
-      <p class="card-text">
-        <small class="text-muted">Release: ${tv.first_air_date}</small>
-      </p>
-    </div>
-      `;
-  
-      document.querySelector('#search-results').appendChild(div);
-    });
-  }
-  
+    document.querySelector('#search-results').appendChild(div);
+  });
 }
 
 // show alert message
