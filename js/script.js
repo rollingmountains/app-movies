@@ -59,7 +59,7 @@ async function search() {
     const result = await fetchSearchAPI();
     console.log(result);
   } else {
-    showAlert('Please enter an search item');
+    showAlert('Please enter an search item', 'error');
   }
 }
 
