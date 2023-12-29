@@ -59,7 +59,7 @@ async function search() {
     const result = await fetchSearchAPI();
     console.log(result);
   } else {
-    showAlert('Please enter an search item', 'error');
+    showAlert('Please enter a search item', 'error');
   }
 }
 
@@ -360,7 +360,7 @@ async function fetchSearchAPI() {
 
   hideSpinner();
 
-  return data
+  return data;
 }
 // fetch api for TMDB
 async function fetchAPIData(endpoint) {
