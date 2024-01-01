@@ -1,4 +1,4 @@
-import tmdb_api_key from './apikey';
+import tmdb_api_key from './apikey.js';
 
 const global = {
   currentPage: window.location.pathname,
