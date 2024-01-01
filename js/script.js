@@ -1,3 +1,5 @@
+import tmdb_api_key from './apikey';
+
 const global = {
   currentPage: window.location.pathname,
   search: {
@@ -8,7 +10,7 @@ const global = {
     totalPages: 0,
   },
   api: {
-    apiKey: 'a8c6b8562cb3f14c24958ab98f97b910',
+    apiKey: tmdb_api_key,
     apiUrl: 'https://api.themoviedb.org/3/',
   },
 };
