@@ -29,7 +29,7 @@ function highlightActiveLink() {
 // display now playing movies in slides
 async function displayMovieSlides() {
   const { results } = await fetchAPIData('movie/now_playing');
-  console.log(results);
+  // console.log(results);
 
   results.forEach((movie) => {
     const div = document.createElement('div');
@@ -53,7 +53,7 @@ async function displayMovieSlides() {
 // movie/tv search
 async function search() {
   const queryString = window.location.search;
-  console.log(queryString);
+  // console.log(queryString);
   const urlParams = new URLSearchParams(queryString);
 
   global.search.type = urlParams.get('type');
@@ -62,7 +62,7 @@ async function search() {
   if (global.search.term !== '' && global.search.term !== null) {
     const { results, page, total_pages, total_results } =
       await fetchSearchAPI();
-    console.log(results, total_pages, page, total_results);
+    // console.log(results, total_pages, page, total_results);
 
     global.search.page = page;
     global.search.totalPages = total_pages;
@@ -249,7 +249,7 @@ async function displayMovieDetails() {
   const movieId = window.location.search.split('=');
 
   const movie = await fetchAPIData(`movie/${movieId[1]}`);
-  console.log(movie);
+  // console.log(movie);
 
   displayBackgroundImage('movie', movie.backdrop_path);
 
@@ -334,7 +334,7 @@ async function displayMovieDetails() {
 // fetch popular tv show to display in tv shows page
 async function displayPopularShows() {
   const { results } = await fetchAPIData('tv/popular');
-  console.log(results);
+  // console.log(results);
 
   results.forEach((show) => {
     const div = document.createElement('div');
@@ -370,7 +370,7 @@ async function displayPopularShows() {
 async function displayShowDetails() {
   const showId = window.location.search.split('=');
   const show = await fetchAPIData(`tv/${showId[1]}`);
-  console.log(show);
+  // console.log(show);
 
   displayBackgroundImage('show', `${show.backdrop_path}`);
 
@@ -448,7 +448,7 @@ function displayBackgroundImage(type, path) {
   overlayDiv.style.opacity = '0.2';
 
   if (type === 'movie') {
-    console.log(document.querySelector('#movie-details'));
+    // console.log(document.querySelector('#movie-details'));
     document.querySelector('#movie-details').appendChild(overlayDiv);
   } else {
     document.querySelector('#show-details').appendChild(overlayDiv);
