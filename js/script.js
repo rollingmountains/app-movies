@@ -40,7 +40,7 @@ async function displayMovieSlides() {
               <img src="https://images.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
             </a>
             <h4 class="swiper-rating">
-              <i class="fas fa-star text-secondary"></i> ${movie.vote_average} / 10
+              <i class="fas fa-star text-secondary"></i> ${(movie.vote_average).toFixed(1)} / 10
             </h4>
     `;
 
@@ -396,7 +396,7 @@ async function displayShowDetails() {
             <h2>${show.original_name}</h2>
             <p>
               <i class="fas fa-star text-primary"></i>
-              ${show.vote_average} / 10
+              ${(show.vote_average).toFixed(1)} / 10
             </p>
             <p class="text-muted">Release Date: ${show.first_air_date}</p>
             <p>
