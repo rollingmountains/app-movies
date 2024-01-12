@@ -1,8 +1,9 @@
 ...
 
 [[headers]]
-  for = "/movie-details.html"
-  [headers.values]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
+    [headers.values]
     Access-Control-Allow-Origin = "*"
 
 ...
