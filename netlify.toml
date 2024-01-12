@@ -1,0 +1,8 @@
+...
+
+[[headers]]
+  for = "/movie-details.html"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+...
